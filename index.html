@@ -1,310 +1,1431 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>ASCII Map Atlas</title>
+  <title>ASCII Atlas</title>
   <style>
-    body {
-      background-color: #000;
-      color: #00ff00;
-      font-family: "Courier New", monospace;
-      margin: 0;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      animation: flicker 0.15s infinite;
-    }
-
-    h1 {
-      color: #00ff00;
-      text-shadow: 0 0 5px #0f0;
-      animation: glow 2s infinite;
-      display: none; /* hidden until boot finishes */
-    }
-
-    nav {
-      margin-bottom: 20px;
-      display: none; /* hidden until boot finishes */
-    }
-
-    nav a {
-      color: #00ff00;
-      text-decoration: none;
-      margin-right: 15px;
-      cursor: pointer;
-      animation: glow 2s infinite;
-    }
-
-    nav a:hover {
-      text-shadow: 0 0 10px #0f0;
-    }
-
-    pre {
-      background: #000;
-      color: #00ff00;
-      padding: 15px;
-      border: 1px solid #00ff00;
-      box-shadow: 0 0 10px #0f0;
-      white-space: pre;
-      display: none;
-      animation: glow 2s infinite;
-    }
-
-    #boot {
-      white-space: pre;
-      color: #00ff00;
-      text-shadow: 0 0 5px #0f0;
-    }
-
-    #lore, #mascot, #quest, #events, #inventory, #mood {
-      margin-top: 10px;
-      color: #00ff00;
-    }
-
-    #cmd {
-      background: #000;
-      border: 1px solid #00ff00;
-      color: #00ff00;
-      font-family: "Courier New", monospace;
-      width: 100%;
-      padding: 5px;
-      margin-top: 15px;
-    }
-
-    /* Blinking cursor */
-    .cursor {
-      display: inline-block;
-      width: 10px;
-      background-color: #00ff00;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    /* CRT Scanlines overlay */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(0,255,0,0.08) 0px,
-        rgba(0,255,0,0.08) 2px,
-        transparent 2px,
-        transparent 4px
-      );
-      mix-blend-mode: multiply;
-    }
-
-    /* Flicker animation */
-    @keyframes flicker {
-      0% { opacity: 1; }
-      50% { opacity: 0.97; }
-      100% { opacity: 1; }
-    }
-
-    /* Glow pulse */
-    @keyframes glow {
-      0% { text-shadow: 0 0 5px #0f0; }
-      50% { text-shadow: 0 0 15px #0f0; }
-      100% { text-shadow: 0 0 5px #0f0; }
-    }
-
-    span.item {
-      cursor: pointer;
-      text-decoration: underline;
-    }
+    body { background: #000; color: #0f0; font-family: monospace; }
+    pre { display: none; white-space: pre; margin: 12px 0; }
+    #output { white-space: pre-wrap; margin: 12px 0; }
+    .prompt { color: #0ff; }
+    .event { color: #ff0; }
+    .help { color: #aaa; }
   </style>
 </head>
 <body>
-  <!-- Boot Sequence -->
-  <div id="boot">
-[BOOTING ASCII ATLAS SYSTEM...]
-Loading ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ 25%
-Loading ███████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ 50%
-Loading ██████████████████▒▒▒▒▒▒▒▒ 75%
-Loading ██████████████████████████ 100%
-System Ready.
+  <div id="output" class="help">
+Type commands like:
+- explore library  /  explore library ext
+- explore docks    /  explore docks ext
+Press Enter to type. 20% chance of a local event on entry.
   </div>
 
-  <h1>ASCII Map Atlas</h1>
-  <nav>
-    <a onclick="showMap('castle')">Castle Keep</a>
-    <a onclick="showMap('market')">Market Quarter</a>
-    <a onclick="showMap('harbor')">Harbor</a>
-    <a onclick="showMap('forge')">Forge</a>
-  </nav>
+  <!-- ========================= -->
+  <!-- ASCII SCENES: CASTLE KEEP -->
+  <!-- ========================= -->
 
-  <!-- Example Districts with clickable items -->
-  <pre id="castle">
-  ##############################
-  #          CASTLE KEEP       #
-  ##############################
-  | Towers | Armory | Barracks |
-  | Great Hall | Library | Lab |
-  | <span class="item" onclick="pickItem('Sword')">Sword</span> | <span class="item" onclick="pickItem('Cod')">Cod</span> |
-  ##############################
+  <pre id="towers_outside">
+====================================================
+                 CASTLE TOWERS (Outside)
+====================================================
+        ^   ^   ^   ^   ^   ^   ^   ^
+       | | | | | | | | | | | | | | | |
+       | | | | | | | | | | | | | | | |
+----------------------------------------------------
+Stone walls rise above the road. Banner flags wave.
+Trees line the path. Stars glimmer overhead.
+====================================================
   </pre>
 
-  <pre id="market">
-  +----------------+----------------+----------------+
-  | <span class="item" onclick="pickItem('Potion')">Potion</span>        | Bakery         | Tavern         |
-  +----------------+----------------+----------------+----------------+
-  | Clothier       | Jeweler        | Fishmonger     |
-  +----------------+----------------+----------------+----------------+
+  <pre id="towers_inside">
+====================================================
+                 CASTLE TOWERS (Inside)
+====================================================
+| Spiral Staircase | Guard Post | Arrow Slits |
+| Wooden Table     | Oil Lamps  | Weapon Rack |
+----------------------------------------------------
+Torches flicker against stone walls. Mascots perch
+near windows, watching the horizon.
+====================================================
   </pre>
 
-  <pre id="harbor">
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  | Docks | Warehouses | Fish Mkt|
-  | Shipyard | Lighthouse        |
-  | <span class="item" onclick="pickItem('Cod')">Cod</span> |
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <pre id="armory_outside">
+====================================================
+                 ARMORY (Outside)
+====================================================
+Stone walls with banners. Road lined with torches.
+Grass courtyard nearby. Stars overhead.
+====================================================
   </pre>
 
-  <pre id="forge">
-  ********************************
-  * Forge Core | Molten Lake     *
-  * Obsidian Mines | Glyph Reactor*
-  * <span class="item" onclick="pickItem('Sword')">Sword</span> |
-  ********************************
+  <pre id="armory_inside">
+====================================================
+                 ARMORY (Inside)
+====================================================
+   ______
+  /      \
+ /        \
+ |        |
+ |        |
+ |________|
+   |    |
+   |    |
+ | | | | | |
+ | | | | | |
+----------------------------------------------------
+Weapon racks line the walls. Tables with gear.
+Lanterns hang from beams. Mascots spar nearby.
+====================================================
   </pre>
 
-  <!-- Lore + Mascot + Quest + Events -->
-  <div id="lore"></div>
-  <div id="mascot"></div>
-  <div id="quest"></div>
-  <div id="events"></div>
-  <div id="inventory">Inventory: []</div>
-  <div id="mood">Mascot Mood: ███▒▒▒ (Chaotic)</div>
+  <pre id="barracks_outside">
+====================================================
+                 BARRACKS (Outside)
+====================================================
+Low stone buildings along the road. Lightposts cast
+long shadows. Trees rustle under the stars.
+====================================================
+  </pre>
 
-  <!-- Command Line -->
-  <input id="cmd" placeholder="> type command (explore market, sell sword to blacksmith, gift cod to fisherman)">
-  <div class="cursor"></div>
+  <pre id="barracks_inside">
+====================================================
+                 BARRACKS (Inside)
+====================================================
+| Sleeping Quarters | Mess Hall     |
+| Training Yard     | Mascot Kennel |
++------------------+       ______
+|   TABLETOP       |      |      |
++------------------+      | SEAT |
+   |            |         |______|
+----------------------------------------------------
+Bunks line the walls. Tables fill the mess hall.
+Lanterns sway from beams.
+====================================================
+  </pre>
+
+  <pre id="great_hall_outside">
+====================================================
+                 GREAT HALL (Outside)
+====================================================
+Grand facade with banners. Road flanked by torches.
+Stars gleam above the battlements.
+====================================================
+  </pre>
+
+  <pre id="great_hall_inside">
+====================================================
+                 GREAT HALL (Inside)
+====================================================
++-----------------------------+
+|           DAIS / THRONE     |
++-----------------------------+
+| Long Tables | Chairs | Lamps|
+| Glyph Banner | Secret Passage|
+----------------------------------------------------
+Banquet tables stretch across the hall. Mascots
+gather under flickering lamps.
+====================================================
+  </pre>
+
+  <pre id="library_outside">
+====================================================
+                 LIBRARY (Outside)
+====================================================
+Road to stone facade with tall arched windows.
+Lightposts along path. Grass courtyard around.
+Stars overhead, banners flutter in the wind.
+====================================================
+  </pre>
+
+  <pre id="library_inside">
+====================================================
+                 LIBRARY (Inside)
+====================================================
+ _______________________
+| || || || || || || || |
+| || || || || || || || |
+| || || || || || || || |
+|_______________________|
++------------------+       ______
+|   OPEN BOOK      |      |      |
++------------------+      | SEAT |
+   |            |         |______|
+----------------------------------------------------
+Scrolls and tomes line the shelves. Lamps glow
+softly over tables. Mascots whisper lore.
+====================================================
+  </pre>
+
+  <pre id="lab_outside">
+====================================================
+                 LAB (Outside)
+====================================================
+Sealed stone door with glyph etchings. Road lit
+by lantern posts. Trees and stars surround.
+====================================================
+  </pre>
+
+  <pre id="lab_inside">
+====================================================
+                 LAB (Inside)
+====================================================
++------------------+
+|   EXPERIMENTS    |
++------------------+
+| Tables | Glyph Reactor | Shelves |
++------------------+
+|   GLYPH REACTOR  |
+|  [CORE ENERGY]   |
++------------------+
+----------------------------------------------------
+Strange glyphs glow. Tables covered in scrolls.
+Mascots scurry among bubbling flasks.
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- ASCII SCENES: MARKET      -->
+  <!-- ========================= -->
+
+  <pre id="blacksmith_outside">
+====================================================
+                 BLACKSMITH (Outside)
+====================================================
+Stone building with smoking chimney. Road paved.
+Lightposts flicker. Trees and banners nearby.
+====================================================
+  </pre>
+
+  <pre id="blacksmith_inside">
+====================================================
+                 BLACKSMITH (Inside)
+====================================================
+  ##########
+  #  FIRE  #
+  ##########
+   |      |
+   |      |
+   ______
+  /      \
+ /        \
+ |        |
+ |        |
+ |________|
+ | | | | | |
+ | | | | | |
+----------------------------------------------------
+Forge blazes. Anvil stands ready. Weapon racks
+line the walls. Mascots hammer ore.
+====================================================
+  </pre>
+
+  <pre id="bakery_outside">
+====================================================
+                 BAKERY (Outside)
+====================================================
+Warm light spills onto the cobblestone road.
+Lantern posts and trees line the path. Stars above.
+====================================================
+  </pre>
+
+  <pre id="bakery_inside">
+====================================================
+                 BAKERY (Inside)
+====================================================
++------------------+   +------------------+
+|   TABLETOP       |   |   TABLETOP       |
++------------------+   +------------------+
+   |            |         |            |
+ | Oven | Bread Racks | Pastry Counter |
+----------------------------------------------------
+Ovens glow. Tables piled with loaves. Lanterns
+hang from beams. Sweet air fills the room.
+====================================================
+  </pre>
+
+  <pre id="tavern_outside">
+====================================================
+                 TAVERN (Outside)
+====================================================
+Wooden sign swings above the door. Road crowded.
+Lanterns and banners sway under starlight.
+====================================================
+  </pre>
+
+  <pre id="tavern_inside">
+====================================================
+                 TAVERN (Inside)
+====================================================
++-----------------------------+
+|             BAR             |
++-----------------------------+
+| Tables | Chairs | Stage     |
+| Lanterns | Cellar Door      |
+----------------------------------------------------
+Laughter fills the room. Chairs scrape against
+stone. Mascots trade stories and songs.
+====================================================
+  </pre>
+
+  <pre id="clothier_outside">
+====================================================
+                 CLOTHIER (Outside)
+====================================================
+Tailor’s facade with mannequins. Road lit by
+lightposts. Trees and stars frame the street.
+====================================================
+  </pre>
+
+  <pre id="clothier_inside">
+====================================================
+                 CLOTHIER (Inside)
+====================================================
+| Loom | Dye Pots | Tailor’s Bench |
++------------------+       ______
+|   TABLETOP       |      |      |
++------------------+      | SEAT |
+   |            |         |______|
+----------------------------------------------------
+Bolts of cloth stack high. Tables and chairs
+surround the workbench. Lamps glow warm.
+====================================================
+  </pre>
+
+  <pre id="jeweler_outside">
+====================================================
+                 JEWELER (Outside)
+====================================================
+Market stall with gem displays. Cobblestone road.
+Lightposts and banners overhead. Stars glimmer.
+====================================================
+  </pre>
+
+  <pre id="jeweler_inside">
+====================================================
+                 JEWELER (Inside)
+====================================================
++------------------+
+|   JEWELS INSIDE  |
++------------------+
+|                  |
+|                  |
++------------------+
+     ___
+    /   \
+---(     )---
+    \___/
+     | |
+     | |
+----------------------------------------------------
+Jewels glitter under lamplight. Gold scales weigh
+rare glyph shards. Mascots guard treasures.
+====================================================
+  </pre>
+
+  <pre id="apothecary_outside">
+====================================================
+                 APOTHECARY (Outside)
+====================================================
+Herbal signs hang above a stone door. Road lined
+with lanterns and shrubs. Stars above.
+====================================================
+  </pre>
+
+  <pre id="apothecary_inside">
+====================================================
+                 APOTHECARY (Inside)
+====================================================
+| Potion Shelves | Herb Racks | Glyph Flasks |
++------------------+       ______
+|   TABLETOP       |      |      |
++------------------+      | SEAT |
+   |            |         |______|
+----------------------------------------------------
+Glass clinks softly. Herbs dry on racks. Lamps
+glow over bubbling mixtures.
+====================================================
+  </pre>
+
+  <pre id="stables_outside">
+====================================================
+                 STABLES (Outside)
+====================================================
+Fenced yard along the road. Lantern posts flicker.
+Trees sway under the starry night.
+====================================================
+  </pre>
+
+  <pre id="stables_inside">
+====================================================
+                 STABLES (Inside)
+====================================================
+| Stalls | Hay Loft | Tack Room |
++------------------+       ______
+|   TABLETOP       |      |      |
++------------------+      | SEAT |
+   |            |         |______|
+----------------------------------------------------
+Horses snort softly. Lanterns sway from beams.
+Mascots polish saddles and harness.
+====================================================
+  </pre>
+
+  <pre id="market_stalls_outside">
+====================================================
+                 MARKET STALLS (Outside)
+====================================================
+Crowded stalls line the road. Lightposts and banners
+overhead. Trees and stars surround the square.
+====================================================
+  </pre>
+
+  <pre id="market_stalls_inside">
+====================================================
+                 MARKET STALLS (Inside)
+====================================================
++------------------+   +------------------+
+|   TABLETOP       |   |   TABLETOP       |
++------------------+   +------------------+
+| Spice | Cloth | Trinkets | Fish |
+----------------------------------------------------
+Vendors shout. Tables brim with goods. Lanterns
+cast warm light across the crowd.
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- ASCII SCENES: HARBOR      -->
+  <!-- ========================= -->
+
+  <pre id="docks_outside">
+====================================================
+                 DOCKS (Outside)
+====================================================
+Wooden planks stretch into waves. Ships moored.
+Lantern posts line the pier. Stars above.
+====================================================
+  </pre>
+
+  <pre id="docks_inside">
+====================================================
+                 DOCKS (Inside)
+====================================================
++-------+   +-------+   _______
+| CRATE |   | CRATE |  /       \
++-------+   +-------+ |  |||||  |
+                      |  |||||  |
+                      |         |
+                       \_______/
+----------------------------------------------------
+Crates stacked. Barrels line the pier. Nets dry.
+Mascots scurry between ropes. Lighthouse beam sweeps.
+====================================================
+  </pre>
+
+  <pre id="warehouses_outside">
+====================================================
+                 WAREHOUSES (Outside)
+====================================================
+Stone warehouses along the road. Lantern posts guard
+the entrances. Stars glimmer over the harbor.
+====================================================
+  </pre>
+
+  <pre id="warehouses_inside">
+====================================================
+                 WAREHOUSES (Inside)
+====================================================
++-------+   +-------+   +-------+
+| CRATE |   | CRATE |   | CRATE |
++-------+   +-------+   +-------+
+| Barrels | Shelves | Rope Coils |
+----------------------------------------------------
+Echoes fill the vast room. Lamps hang high.
+Mascots track inventory on ledgers.
+====================================================
+  </pre>
+
+  <pre id="fish_market_outside">
+====================================================
+                 FISH MARKET (Outside)
+====================================================
+Stalls along the harbor road. Lanterns flicker.
+Trees and banners sway under the stars.
+====================================================
+  </pre>
+
+  <pre id="fish_market_inside">
+====================================================
+                 FISH MARKET (Inside)
+====================================================
+| Ice tables | Nets | Scales | Buckets |
++------------------+   +------------------+
+|   TABLETOP       |   |   TABLETOP       |
++------------------+   +------------------+
+----------------------------------------------------
+Vendors call out. Lamps glint on scales. Mascots
+haul nets and stack crates.
+====================================================
+  </pre>
+
+  <pre id="shipyard_outside">
+====================================================
+                 SHIPYARD (Outside)
+====================================================
+Dry docks line the road. Lantern posts flicker.
+Stars gleam above half-built hulls.
+====================================================
+  </pre>
+
+  <pre id="shipyard_inside">
+====================================================
+                 SHIPYARD (Inside)
+====================================================
+      __/___
+ ____/______|
+ \          \
+  \__________\
+      ||  ||
+| Sawhorses | Ropes | Planks |
+----------------------------------------------------
+Hammers ring. Ships rise from frames. Mascots
+haul timber and tar rope.
+====================================================
+  </pre>
+
+  <pre id="lighthouse_outside">
+====================================================
+                 LIGHTHOUSE (Outside)
+====================================================
+Tall beacon rises above rocks. Road winds uphill.
+Stars glimmer. Waves crash below.
+====================================================
+  </pre>
+
+  <pre id="lighthouse_inside">
+====================================================
+                 LIGHTHOUSE (Inside)
+====================================================
++----------------------+
+|   SIGNAL CONTROLS    |
+| [SWITCH]   [LEVER]   |
+| [DIAL]     [GAUGE]   |
++----------------------+
+| Keeper’s Quarters | Lanterns |
+----------------------------------------------------
+The beacon glows. Mascots perch near the lamp,
+watching ships in the distance.
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- ASCII SCENES: TEMPLES     -->
+  <!-- ========================= -->
+
+  <pre id="temple_light_outside">
+====================================================
+                 TEMPLE OF LIGHT (Outside)
+====================================================
+Grand marble steps lead to tall columns. Road lined
+with lantern posts. Stars glimmer above.
+====================================================
+  </pre>
+
+  <pre id="temple_light_inside">
+====================================================
+                 TEMPLE OF LIGHT (Inside)
+====================================================
+ ||     ||     ||     ||
+ ||     ||     ||     ||
+   _________
+  |         |
+  |  ALTAR  |
+  |_________|
+----------------------------------------------------
+Sunlight streams through stained glass. Mascots
+gather near the altar, glyphs glowing softly.
+====================================================
+  </pre>
+
+  <pre id="cathedral_outside">
+====================================================
+                 CATHEDRAL (Outside)
+====================================================
+Massive facade with towers. Road lit by lanterns.
+Stars shimmer through stained glass.
+====================================================
+  </pre>
+
+  <pre id="cathedral_inside">
+====================================================
+                 CATHEDRAL (Inside)
+====================================================
+ ||     ||     ||     ||     ||
+ ||     ||     ||     ||     ||
+   _________      _________
+  |         |    |         |
+  |  ALTAR  |    |  CHOIR  |
+  |_________|    |_________|
+----------------------------------------------------
+Chant echoes under the vaults. Lamps flicker.
+Mascots kneel near the altar and choir.
+====================================================
+  </pre>
+
+  <pre id="shrine_mascots_outside">
+====================================================
+                 SHRINE OF MASCOTS (Outside)
+====================================================
+Small stone shrine along the road. Lantern posts
+and trees frame the path. Stars glimmer.
+====================================================
+  </pre>
+
+  <pre id="shrine_mascots_inside">
+====================================================
+                 SHRINE OF MASCOTS (Inside)
+====================================================
+   _________
+  |         |
+  |  ALTAR  |
+  |_________|
+| Offerings | Lamps | Glyph Tokens |
+----------------------------------------------------
+Mascots leave trinkets. Lamps glow warm. Glyphs
+sparkle faintly across the stones.
+====================================================
+  </pre>
+
+  <pre id="temple_shadows_outside">
+====================================================
+                 TEMPLE OF SHADOWS (Outside)
+====================================================
+Dark facade with high arches. Road dimly lit.
+Lanterns flicker. Stars hide behind clouds.
+====================================================
+  </pre>
+
+  <pre id="temple_shadows_inside">
+====================================================
+                 TEMPLE OF SHADOWS (Inside)
+====================================================
+ ||     ||     ||     ||
+ ||     ||     ||     ||
+   _________
+  |         |
+  |  ALTAR  |
+  |_________|
+| Braziers | Curtains | Glyph Veil |
+----------------------------------------------------
+Shadows pool around pillars. Lamps burn low.
+Mascots whisper beneath veiled glyphs.
+====================================================
+  </pre>
+
+  <pre id="tower_fire_outside">
+====================================================
+                 TOWER OF FIRE (Outside)
+====================================================
+A blazing spire rises above the city. Flames flicker
+at its peak. Roads circle the base.
+====================================================
+  </pre>
+
+  <pre id="tower_fire_inside">
+====================================================
+                 TOWER OF FIRE (Inside)
+====================================================
+ ~~~~~~~~~~~~~~~~~~~~~~~
+ ~~~~~~   FIRE   ~~~~~~~
+ ~~~~~~~~~~~~~~~~~~~~~~~
+| Anvils | Racks | Tables |
+----------------------------------------------------
+Molten glyphs pulse on the walls. Mascots chant
+near the blazing core.
+====================================================
+  </pre>
+
+  <pre id="tower_ice_outside">
+====================================================
+                 TOWER OF ICE (Outside)
+====================================================
+Frozen spire gleams under starlight. Roads crunch
+with snow. Lantern posts flicker dimly.
+====================================================
+  </pre>
+
+  <pre id="tower_ice_inside">
+====================================================
+                 TOWER OF ICE (Inside)
+====================================================
+ ***************
+ *   ICE CORE  *
+ ***************
+| Frost Tables | Lamps | Shelves |
+----------------------------------------------------
+Icicles hang from arches. Tables covered in frost.
+Mascots shiver near glowing glyphs.
+====================================================
+  </pre>
+
+  <pre id="tower_storms_outside">
+====================================================
+                 TOWER OF STORMS (Outside)
+====================================================
+Lightning cracks around the spire. Roads spiral
+under flickering lantern posts. Stars tremble.
+====================================================
+  </pre>
+
+  <pre id="tower_storms_inside">
+====================================================
+                 TOWER OF STORMS (Inside)
+====================================================
++----------------------+
+|   SIGNAL CONTROLS    |
+| [SWITCH] [LEVER]     |
+| [DIAL]   [GAUGE]     |
++----------------------+
+| Coils | Rods | Conduits |
+----------------------------------------------------
+Thunder rolls through chambers. Lamps flare. Mascots
+monitor gauges and rods.
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- ASCII SCENES: ACADEMY     -->
+  <!-- ========================= -->
+
+  <pre id="glyph_academy_outside">
+====================================================
+                 GLYPH ACADEMY (Outside)
+====================================================
+Scholarly halls along a lantern-lit road. Trees
+and banners frame the courtyard under stars.
+====================================================
+  </pre>
+
+  <pre id="glyph_academy_inside">
+====================================================
+                 GLYPH ACADEMY (Inside)
+====================================================
+ _______________________
+| || || || || || || || |
+| || || || || || || || |
+| || || || || || || || |
+|_______________________|
++------------------+   +------------------+
+|   OPEN BOOK      |   |   TABLETOP       |
++------------------+   +------------------+
+----------------------------------------------------
+Students copy tomes at tables. Lamps glow over
+glyph diagrams and scrolls.
+====================================================
+  </pre>
+
+  <pre id="colosseum_outside">
+====================================================
+                 COLOSSEUM (Outside)
+====================================================
+Massive stone arches tower above. Roads lead to
+grand gates. Stars glimmer overhead.
+====================================================
+  </pre>
+
+  <pre id="colosseum_inside">
+====================================================
+                 COLOSSEUM (Inside)
+====================================================
+###############################
+#           ARENA FLOOR        #
+###############################
+| Stands filled with mascots   |
+| Torches line the walls       |
+| Training dummies at corners  |
+###############################
+====================================================
+  </pre>
+
+  <pre id="theater_outside">
+====================================================
+                 THEATER (Outside)
+====================================================
+Facade with tall columns. Road lined with banners.
+Lantern posts flicker. Stars above.
+====================================================
+  </pre>
+
+  <pre id="theater_inside">
+====================================================
+                 THEATER (Inside)
+====================================================
++-----------------------------+
+|           STAGE             |
++-----------------------------+
+| Rows of chairs | Torches    |
+| Mascots gather | Curtains   |
++-----------------------------+
+====================================================
+  </pre>
+
+  <pre id="circus_outside">
+====================================================
+                 CIRCUS (Outside)
+====================================================
+Colorful tents along the road. Lantern posts shine.
+Stars glitter above ropes and poles.
+====================================================
+  </pre>
+
+  <pre id="circus_inside">
+====================================================
+                 CIRCUS (Inside)
+====================================================
++-----------------------------+
+|        RING / ARENA         |
++-----------------------------+
+| Bleachers | Props | Lamps   |
+| Tents | Ropes | Platforms   |
+----------------------------------------------------
+Mascots tumble and juggle. Lamps flash across
+the ring. Crowds cheer.
+====================================================
+  </pre>
+
+  <pre id="race_track_outside">
+====================================================
+                 RACE TRACK (Outside)
+====================================================
+Oval track lit by lantern posts. Roads lead to
+grandstands. Stars glimmer overhead.
+====================================================
+  </pre>
+
+  <pre id="race_track_inside">
+====================================================
+                 RACE TRACK (Inside)
+====================================================
+###############################
+#         TRACK FIELD          #
+###############################
+| Stands filled with mascots   |
+| Signal room with flags       |
+| Torches line the course      |
+###############################
+====================================================
+  </pre>
+
+  <pre id="mascot_arena_outside">
+====================================================
+                 MASCOT ARENA (Outside)
+====================================================
+Arched gates and banners. Road lit by lanterns.
+Stars shimmer above cheering crowds.
+====================================================
+  </pre>
+
+  <pre id="mascot_arena_inside">
+====================================================
+                 MASCOT ARENA (Inside)
+====================================================
+###############################
+#         ARENA FLOOR          #
+###############################
+| Stands | Torches | Booths    |
+| Tables | Chairs  | Lamps     |
+###############################
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- ASCII SCENES: RESIDENTIAL -->
+  <!-- ========================= -->
+
+  <pre id="houses_outside">
+====================================================
+                 HOUSES (Outside)
+====================================================
+Small stone cottages line the road. Trees and grass
+surround the path. Lantern posts flicker at night.
+====================================================
+  </pre>
+
+  <pre id="houses_inside">
+====================================================
+                 HOUSES (Inside)
+====================================================
++------------------+       ______
+|   TABLETOP       |      |      |
++------------------+      | SEAT |
+   |            |         |______|
+| Shelves | Lamps | Hearth |
+----------------------------------------------------
+Wooden tables and chairs fill the room. Shelves
+hold simple goods. Lanterns hang from beams.
+====================================================
+  </pre>
+
+  <pre id="apartments_outside">
+====================================================
+                 APARTMENTS (Outside)
+====================================================
+Tall stone building with balconies. Roads paved
+with cobblestones. Lightposts line the street.
+====================================================
+  </pre>
+
+  <pre id="apartments_inside">
+====================================================
+                 APARTMENTS (Inside)
+====================================================
+| Multiple rooms | Shared tables | Chairs |
+| Lanterns on walls | Mascot quarters |
++------------------+   +------------------+
+|   TABLETOP       |   |   TABLETOP       |
++------------------+   +------------------+
+----------------------------------------------------
+Corridors connect small chambers. Tables and chairs
+fill common areas. Lanterns glow softly.
+====================================================
+  </pre>
+
+  <pre id="gardens_outside">
+====================================================
+                 GARDENS (Outside)
+====================================================
+Rows of hedges and flowers. Pathways lit by lanterns.
+Trees sway under starlight.
+====================================================
+  </pre>
+
+  <pre id="gardens_inside">
+====================================================
+                 GARDENS (Inside)
+====================================================
+###############################
+#   Flower Beds | Benches     #
+#   Fountain    | Pathways    #
+###############################
+| Lamps | Trees | Hedges |
+----------------------------------------------------
+Mascots wander among blossoms. Lanterns glow near
+stone benches. Water trickles softly.
+====================================================
+  </pre>
+
+  <pre id="playgrounds_outside">
+====================================================
+                 PLAYGROUNDS (Outside)
+====================================================
+Open field by the road. Lantern posts flicker.
+Trees cast long shadows under stars.
+====================================================
+  </pre>
+
+  <pre id="playgrounds_inside">
+====================================================
+                 PLAYGROUNDS (Inside)
+====================================================
+| Swings | Slides | Benches |
+| Tables | Lamps | Pathways |
+----------------------------------------------------
+Mascots chase and laugh. Lamps glow along paths.
+Grass rustles in the night.
+====================================================
+  </pre>
+
+  <pre id="bathhouse_outside">
+====================================================
+                 BATHHOUSE (Outside)
+====================================================
+Steam drifts through arches. Road lit by lanterns.
+Stars shimmer on tiled roofs.
+====================================================
+  </pre>
+
+  <pre id="bathhouse_inside">
+====================================================
+                 BATHHOUSE (Inside)
+====================================================
+| Pools | Benches | Towel Racks |
+| Lamps | Tables | Shelves |
+----------------------------------------------------
+Warm mist fills the room. Lamps reflect off water.
+Mascots relax on benches.
+====================================================
+  </pre>
+
+  <pre id="courtyards_outside">
+====================================================
+                 COURTYARDS (Outside)
+====================================================
+Open squares along the road. Lantern posts and trees.
+Stars glimmer above stone paths.
+====================================================
+  </pre>
+
+  <pre id="courtyards_inside">
+====================================================
+                 COURTYARDS (Inside)
+====================================================
+| Benches | Lamps | Fountain |
+| Tables | Trees | Pathways |
+----------------------------------------------------
+Mascots gather to talk. Lamps glow among trees.
+Water splashes in the fountain.
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- ASCII SCENES: CATACOMBS   -->
+  <!-- ========================= -->
+
+  <pre id="tombs_outside">
+====================================================
+                 TOMBS (Outside)
+====================================================
+Stone mausoleums line the path. Grass overgrown.
+Lantern posts flicker dimly. Stars overhead.
+====================================================
+  </pre>
+
+  <pre id="tombs_inside">
+====================================================
+                 TOMBS (Inside)
+====================================================
+  _________
+ /         \
+|   RIP     |
+|___________|
+| Lamps | Benches | Offerings |
+----------------------------------------------------
+Rows of tombs line the walls. Torches flicker.
+Mascots whisper among the graves.
+====================================================
+  </pre>
+
+  <pre id="crypts_outside">
+====================================================
+                 CRYPTS (Outside)
+====================================================
+Stone stairway descends underground. Road lined
+with statues. Lanterns flicker faintly.
+====================================================
+  </pre>
+
+  <pre id="crypts_inside">
+====================================================
+                 CRYPTS (Inside)
+====================================================
+#########################
+#       CORRIDOR        #
+#########################
+| Tombs line the walls  |
+| Torches flicker       |
+| Lore vault nearby     |
+#########################
+====================================================
+  </pre>
+
+  <pre id="hidden_lab_outside">
+====================================================
+                 HIDDEN LAB (Outside)
+====================================================
+Sealed stone door hidden in ruins. Road overgrown.
+Lantern posts broken. Stars faint overhead.
+====================================================
+  </pre>
+
+  <pre id="hidden_lab_inside">
+====================================================
+                 HIDDEN LAB (Inside)
+====================================================
++------------------+
+|   EXPERIMENTS    |
++------------------+
+| Tables | Glyph Reactor | Shelves |
++------------------+
+|   GLYPH REACTOR  |
+|  [CORE ENERGY]   |
++------------------+
+----------------------------------------------------
+Strange glyphs glow. Tables covered in scrolls.
+Mascots scurry among bubbling flasks.
+====================================================
+  </pre>
+
+  <pre id="maze_corridors_outside">
+====================================================
+                 MAZE CORRIDORS (Outside)
+====================================================
+Stone arches form a labyrinth along the road.
+Lantern posts mark entries. Stars above.
+====================================================
+  </pre>
+
+  <pre id="maze_corridors_inside">
+====================================================
+                 MAZE CORRIDORS (Inside)
+====================================================
+#########################
+#  TURN | HALL | NODE   #
+#########################
+| Lamps | Markers | Ropes |
+----------------------------------------------------
+Steps echo through bends. Lamps flicker in corners.
+Mascots leave chalk marks on stone.
+====================================================
+  </pre>
+
+  <pre id="lore_vault_outside">
+====================================================
+                 LORE VAULT (Outside)
+====================================================
+Iron door sealed behind arches. Road lit by lanterns.
+Trees whisper under the stars.
+====================================================
+  </pre>
+
+  <pre id="lore_vault_inside">
+====================================================
+                 LORE VAULT (Inside)
+====================================================
++------------------+
+|   ARCHIVE SAFE   |
++------------------+
+ _______________________
+| || || || || || || || |
+| || || || || || || || |
+| || || || || || || || |
+|_______________________|
+----------------------------------------------------
+Quiet hum fills the chamber. Lamps glow on shelves.
+Mascots catalog ancient scrolls.
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- ASCII SCENES: FORGE       -->
+  <!-- ========================= -->
+
+  <pre id="forge_core_outside">
+====================================================
+                 FORGE CORE (Outside)
+====================================================
+Fiery glow lights the district. Roads lined with
+stone arches. Lanterns flicker red.
+====================================================
+  </pre>
+
+  <pre id="forge_core_inside">
+====================================================
+                 FORGE CORE (Inside)
+====================================================
+  ##########
+  #  FIRE  #
+  ##########
+   |      |
+   |      |
+   ______
+  /      \
+ /        \
+ |        |
+ |        |
+ |________|
+ | | | | | |
+ | | | | | |
+----------------------------------------------------
+Molten pools bubble. Anvils and weapon racks line
+the walls. Mascots hammer glyphs.
+====================================================
+  </pre>
+
+  <pre id="molten_lake_outside">
+====================================================
+                 MOLTEN LAKE (Outside)
+====================================================
+Fiery glow reflects on stone. Roads circle the lake.
+Lantern posts flicker red. Stars faint overhead.
+====================================================
+  </pre>
+
+  <pre id="molten_lake_inside">
+====================================================
+                 MOLTEN LAKE (Inside)
+====================================================
+ ~~~~~~~~~~~~~~~~~~~~~~~
+ ~~~~~~   FIRE   ~~~~~~~
+ ~~~~~~~~~~~~~~~~~~~~~~~
+| Platforms | Benches | Lamps |
+----------------------------------------------------
+Molten waves crash against stone. Mascots chant
+near glyph reactors. Heat fills the air.
+====================================================
+  </pre>
+
+  <pre id="obsidian_mines_outside">
+====================================================
+                 OBSIDIAN MINES (Outside)
+====================================================
+Mine entrances line the road. Lantern posts flicker.
+Trees stand stark under starry skies.
+====================================================
+  </pre>
+
+  <pre id="obsidian_mines_inside">
+====================================================
+                 OBSIDIAN MINES (Inside)
+====================================================
+| Carts | Picks | Lanterns |
+#########################
+#   TUNNEL | SHAFT      #
+#########################
+| Crates | Racks | Tables |
+----------------------------------------------------
+Shards gleam in lamplight. Mascots haul ore carts.
+Echoes travel down shafts.
+====================================================
+  </pre>
+
+  <pre id="glyph_reactor_outside">
+====================================================
+                 GLYPH REACTOR (Outside)
+====================================================
+Stone tower hums with energy. Roads lined with
+lantern posts. Stars glimmer faintly.
+====================================================
+  </pre>
+
+  <pre id="glyph_reactor_inside">
+====================================================
+                 GLYPH REACTOR (Inside)
+====================================================
++------------------+
+|   GLYPH REACTOR  |
+|  [CORE ENERGY]   |
++------------------+
+| Consoles | Tables | Lamps |
+----------------------------------------------------
+Glyphs pulse brightly. Tables covered in scrolls.
+Mascots guard the core chamber.
+====================================================
+  </pre>
+
+  <!-- ========================= -->
+  <!-- COMMANDS + EVENTS         -->
+  <!-- ========================= -->
 
   <script>
-    // Boot sequence
-    window.onload = function() {
-      setTimeout(() => {
-        document.getElementById("boot").style.display = "none";
-        document.querySelector("h1").style.display = "block";
-        document.querySelector("nav").style.display = "block";
-      }, 4000);
-    };
-
-    // Inventory system
-    let inventory = [];
-    function pickItem(item) {
-      inventory.push(item);
-      updateInventory();
-      logEvent("Picked up " + item);
-    }
-    function updateInventory() {
-      document.getElementById("inventory").innerText = "Inventory: [" + inventory.join(", ") + "]";
+    function showMap(id) {
+      document.querySelectorAll("pre").forEach(p => p.style.display="none");
+      const el = document.getElementById(id);
+      if (el) el.style.display="block";
+      else log("No map found: " + id);
     }
 
-    // Merchants and pricing
-    let merchants = {
-      fisherman: { wants: "Cod", priceDrop: 0.8 },
-      blacksmith: { wants: "Sword", priceDrop: 0.7 },
-      apothecary: { wants: "Potion", priceDrop: 0.9 }
-    };
-    let prices = { Cod: 10, Sword: 50, Potion: 25 };
-
-    function sellItem(item, merchant) {
-      if (!inventory.includes(item)) { alert("You don't have " + item); return; }
-      let price = prices[item];
-      if (merchants[merchant].gifted) price = Math.floor(price * merchants[merchant].priceDrop);
-      logEvent("Sold " + item + " to " + merchant + " for " + price + " coins!");
-      inventory.splice(inventory.indexOf(item), 1);
-      updateInventory();
+    function showEvent(text) {
+      const out = document.getElementById("output");
+      out.innerHTML += "\\nEVENT: " + text;
     }
 
-    function giftItem(item, merchant) {
-      if (!inventory.includes(item)) { alert("You don't have " + item); return; }
-      if (merchants[merchant].wants === item) {
-        merchants[merchant].gifted = true;
-        logEvent("Gifted " + item + " to " + merchant + ". Prices now drop!");
-      } else {
-        logEvent("Gifted " + item + " to " + merchant + ". No price change.");
-      }
-      inventory.splice(inventory.indexOf(item), 1);
-      updateInventory();
+    function log(text) {
+      const out = document.getElementById("output");
+      out.innerHTML += "\\n" + text;
     }
 
-    // Lore logs
-    function showLore(text) {
-      let loreBox = document.getElementById("lore");
-      loreBox.textContent = "";
-      let i=0;
-      let interval = setInterval(() => {
-        loreBox.textContent += text[i];
-        i++;
-        if(i>=text.length) clearInterval(interval);
-      }, 30);
-    }
+    function handleCommand(cmdRaw) {
+      let cmd = cmdRaw.toLowerCase().trim();
 
-    // Mascot commentary
-    // Mascot commentary
-    function mascotSpeak(msg) {
-      document.getElementById("mascot").innerText = "> Mascot: " + msg;
-    }
-
-    // Quest prompts
-    function newQuest(district) {
-      document.getElementById("quest").innerText = "> Quest: Retrieve glyph from " + district;
-    }
-
-    // Event log
-    function logEvent(msg) {
-      document.getElementById("events").innerText = msg;
-    }
-
-    // Command line input
-    document.getElementById("cmd").addEventListener("keydown", function(e){
-      if(e.key==="Enter"){
-        let cmd=this.value.toLowerCase();
-
-        // Exploration commands
-        if(cmd.includes("explore market")) showMap("market");
-        if(cmd.includes("explore castle")) showMap("castle");
-        if(cmd.includes("explore harbor")) showMap("harbor");
-        if(cmd.includes("scan forge")) showMap("forge");
-
-        // Trading commands
-        if(cmd.includes("sell sword to blacksmith")) sellItem("Sword","blacksmith");
-        if(cmd.includes("gift cod to fisherman")) giftItem("Cod","fisherman");
-        if(cmd.includes("sell potion to apothecary")) sellItem("Potion","apothecary");
-
-        // Unlock hidden areas
-        if(cmd==="unlock catacombs 1234") {
-          logEvent("Catacombs unlocked!");
-          alert("You have unlocked the Catacombs!");
+      // Helper to reduce duplication
+      function route(base, insideId, outsideId, insideEvent, outsideEvent) {
+        if (cmd === "explore " + base || cmd === "explore " + base + " inside") {
+          showMap(insideId);
+          if (Math.random() < 0.2) showEvent(insideEvent);
+          return true;
         }
+        if (cmd === "explore " + base + " ext" || cmd === "explore " + base + " outside") {
+          showMap(outsideId);
+          if (Math.random() < 0.2) showEvent(outsideEvent);
+          return true;
+        }
+        return false;
+      }
 
-        this.value="";
+      // CASTLE KEEP
+      if (route("towers", "towers_inside", "towers_outside",
+        "A watch mascot spots movement on the horizon!",
+        "Banner flags whip in a sudden gust.")) return;
+      if (route("armory", "armory_inside", "armory_outside",
+        "Sparks fly as mascots spar among the racks!",
+        "Drill lines form outside—steel clatters on stone.")) return;
+      if (route("barracks", "barracks_inside", "barracks_outside",
+        "Mess hall erupts in song—spoons keep rhythm!",
+        "Lanterns flicker as patrol forms up.")) return;
+      if (route("great hall", "great_hall_inside", "great_hall_outside",
+        "A herald announces a surprise banquet!",
+        "Crowds gather as banners unfurl.")) return;
+      if (route("library", "library_inside", "library_outside",
+        "A hidden scroll glows in the glyph chamber!",
+        "Lantern posts flicker as mascots gather outside.")) return;
+      if (route("lab", "lab_inside", "lab_outside",
+        "Glyph reactor hums—mascots steady the flow!",
+        "Runes shimmer faintly on the sealed door.")) return;
+
+      // MARKET
+      if (route("blacksmith", "blacksmith_inside", "blacksmith_outside",
+        "Forge surges—hammers ring in chorus!",
+        "Chimney flares as sparks dance in the night.")) return;
+      if (route("bakery", "bakery_inside", "bakery_outside",
+        "Fresh loaves appear—sweet air fills the room!",
+        "Warm light spills across the cobbles.")) return;
+      if (route("tavern", "tavern_inside", "tavern_outside",
+        "A bard kicks off a roaring chorus!",
+        "Crowds gather under the swinging sign.")) return;
+      if (route("clothier", "clothier_inside", "clothier_outside",
+        "A rare dye batch is unveiled—cheers erupt!",
+        "Mannequins rotate in the window display.")) return;
+      if (route("jeweler", "jeweler_inside", "jeweler_outside",
+        "Foil vault opens—a gem sparkles on the scales!",
+        "Banners catch lamp light—glints draw a crowd.")) return;
+      if (route("apothecary", "apothecary_inside", "apothecary_outside",
+        "A tonic bubbles over—mascots scramble to cap it!",
+        "Herbal scents drift along the road.")) return;
+      if (route("stables", "stables_inside", "stables_outside",
+        "Mascot mounts whinny—new tack fitted!",
+        "Lanterns sway as a night ride assembles.")) return;
+      if (route("market stalls", "market_stalls_inside", "market_stalls_outside",
+        "A rare trinket appears—hands reach fast!",
+        "Vendors shout—lanterns flare across the square.")) return;
+
+      // HARBOR
+      if (route("docks", "docks_inside", "docks_outside",
+        "A crate pops—fresh catch floods the pier!",
+        "Waves slap the pilings—lanterns ripple.")) return;
+      if (route("warehouses", "warehouses_inside", "warehouses_outside",
+        "Inventory shuffle—new crate stamps arrive!",
+        "Guards swap shifts beneath lamplight.")) return;
+      if (route("fish market", "fish_market_inside", "fish_market_outside",
+        "A massive fish lands—scales flash in lamps!",
+        "Vendors drum up buyers—crowds swell.")) return;
+      if (route("shipyard", "shipyard_inside", "shipyard_outside",
+        "A keel is set—cheers echo through frames!",
+        "Tar smoke drifts as night crews assemble.")) return;
+      if (route("lighthouse", "lighthouse_inside", "lighthouse_outside",
+        "Signal room spikes—gauges twitch wildly!",
+        "Beacon sweeps—ships blink lamps in reply.")) return;
+
+      // TEMPLES & TOWERS
+      if (route("temple of light", "temple_light_inside", "temple_light_outside",
+        "A glyph blessing washes over the altar!",
+        "Lantern posts glow as pilgrims arrive.")) return;
+      if (route("cathedral", "cathedral_inside", "cathedral_outside",
+        "Choir swells—stained glass glitters!",
+        "Procession gathers beneath the towers.")) return;
+      if (route("shrine of mascots", "shrine_mascots_inside", "shrine_mascots_outside",
+        "Offerings shimmer—glyph tokens hum!",
+        "Small bells ring—mascots kneel outside.")) return;
+      if (route("temple of shadows", "temple_shadows_inside", "temple_shadows_outside",
+        "Veil stirs—a shadow glyph reveals a path!",
+        "Curtains billow—braziers flare low.")) return;
+      if (route("tower of fire", "tower_fire_inside", "tower_fire_outside",
+        "Core surges—anvils ring to stabilize!",
+        "Spire flames streak across the sky.")) return;
+      if (route("tower of ice", "tower_ice_inside", "tower_ice_outside",
+        "Ice core pulses—frost creeps over tables!",
+        "Snow gusts swirl around the base.")) return;
+      if (route("tower of storms", "tower_storms_inside", "tower_storms_outside",
+        "Gauges spike—rods crackle with charge!",
+        "Lightning webs across the spire.")) return;
+
+      // ACADEMY & ARENAS
+      if (route("glyph academy", "glyph_academy_inside", "glyph_academy_outside",
+        "A rare codex is unveiled—gasps fill the hall!",
+        "Students spill into the courtyard—lamps brighten.")) return;
+      if (route("colosseum", "colosseum_inside", "colosseum_outside",
+        "Surprise duel—mascots roar from the stands!",
+        "Torches flare as banners unfurl.")) return;
+      if (route("theater", "theater_inside", "theater_outside",
+        "Curtains rise—glyph drama begins!",
+        "Crowds queue beneath glowing lanterns.")) return;
+      if (route("circus", "circus_inside", "circus_outside",
+        "Trick volley—props spin across the ring!",
+        "Drumroll echoes beyond the tents.")) return;
+      if (route("race track", "race_track_inside", "race_track_outside",
+        "Sprint start—flags snap as mascots dash!",
+        "Grandstands rumble—night race announced.")) return;
+      if (route("mascot arena", "mascot_arena_inside", "mascot_arena_outside",
+        "Challenge issued—arena lights blaze!",
+        "Crowds surge toward the gates.")) return;
+
+      // RESIDENTIAL
+      if (route("houses", "houses_inside", "houses_outside",
+        "A neighbor shares stew—table laughter grows!",
+        "Cottage lanterns glow in a warm row.")) return;
+      if (route("apartments", "apartments_inside", "apartments_outside",
+        "Story circle forms—chairs scrape close!",
+        "Balconies blink with lamplight.")) return;
+      if (route("gardens", "gardens_inside", "gardens_outside",
+        "New blooms open—fountain reflects lamps!",
+        "Fireflies drift along paths.")) return;
+      if (route("playgrounds", "playgrounds_inside", "playgrounds_outside",
+        "Tag breaks out—benches fill with cheers!",
+        "Lanterns brighten as families arrive.")) return;
+      if (route("bathhouse", "bathhouse_inside", "bathhouse_outside",
+        "Steam surge—warm towels passed around!",
+        "Windows fog—lamps glow through mist.")) return;
+      if (route("courtyards", "courtyards_inside", "courtyards_outside",
+        "Market debate—tables gather a crowd!",
+        "Musicians tune under the trees.")) return;
+
+      // CATACOMBS
+      if (route("tombs", "tombs_inside", "tombs_outside",
+        "Glyph spirit rises—gifts scatter on the altar!",
+        "Lanterns flicker eerily among mausoleums.")) return;
+      if (route("crypts", "crypts_inside", "crypts_outside",
+        "Secret latch opens—a lore vault gleams!",
+        "Statues cast long moving shadows.")) return;
+      if (route("hidden lab", "hidden_lab_inside", "hidden_lab_outside",
+        "Reactor sparks—mascots scramble to contain!",
+        "Ruins tremble—the sealed door glows.")) return;
+      if (route("maze corridors", "maze_corridors_inside", "maze_corridors_outside",
+        "Chalk marks rearrange—new path discovered!",
+        "Lantern posts flicker at the entrances.")) return;
+      if (route("lore vault", "lore_vault_inside", "lore_vault_outside",
+        "A codex clicks open—pages hum!",
+        "Keys clink as wards reseal the arch.")) return;
+
+      // FORGE DISTRICT
+      if (route("forge core", "forge_core_inside", "forge_core_outside",
+        "Hammers ring—the core flares bright!",
+        "Fiery glow paints the arches red.")) return;
+      if (route("molten lake", "molten_lake_inside", "molten_lake_outside",
+        "Waves surge—platform lamps blaze!",
+        "Heat shimmer ripples across the road.")) return;
+      if (route("obsidian mines", "obsidian_mines_inside", "obsidian_mines_outside",
+        "Ore cart clatters—a new vein found!",
+        "Miners trade shifts under lamplight.")) return;
+      if (route("glyph reactor", "glyph_reactor_inside", "glyph_reactor_outside",
+        "Core pulses—gauges redline briefly!",
+        "The tower hum deepens—glyphs glow outside.")) return;
+
+      log("Unknown command. Try: explore library / explore library ext");
+    }
+
+    // Minimal input loop: press Enter to type a command
+    document.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        const cmd = prompt("Enter command:");
+        if (cmd) {
+          document.getElementById("output").innerHTML += "\\n> " + cmd;
+          handleCommand(cmd);
+        }
       }
     });
 
-    // Random events (every 15s)
-    setInterval(() => {
-      let events=[
-        "ALERT: Mascot escaped!",
-        "Potion lab meltdown!",
-        "Glyph reactor overload!",
-        "Harbor storm incoming!"
-      ];
-      let msg=events[Math.floor(Math.random()*events.length)];
-      document.getElementById("events").innerText=msg;
-    }, 15000);
+    // Show a default view
+    showMap("library_inside");
+    log("Default view: Library (Inside). Press Enter to explore.");
   </script>
 </body>
 </html>
