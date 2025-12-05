@@ -1,133 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>#000000</title>
-    <link type="image/x-icon" rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAHklEQVQ4T2NkYGD4z0ABYBw1gGE0DBhGw4BhWIQBAE5OEAELnjVHAAAAAElFTkSuQmCC">
-    <style>
-        :root {
-            --color: #000000;
-            --color-transparent: #00000022;
-        }
-
-        ::selection {
-            background: var(--color-transparent);
-        }
-
-        html,
-        body {
-            background: var(--color);
-            height: 100%;
-            margin: 0;
-        }
-
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        #color {
-            background: white;
-            color: var(--color);
-            font-size: 2.5rem;
-            font-weight: 300;
-            padding: 2.25rem 3rem;
-            font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
-            cursor: text;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>ASCII Map Atlas</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: "Courier New", monospace;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ff00;
+      text-shadow: 0 0 5px #0f0;
+    }
+    nav {
+      margin-bottom: 20px;
+    }
+    nav a {
+      color: #00ff00;
+      text-decoration: none;
+      margin-right: 15px;
+      cursor: pointer;
+    }
+    nav a:hover {
+      text-shadow: 0 0 5px #0f0;
+    }
+    pre {
+      background: #000;
+      color: #00ff00;
+      padding: 15px;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 10px #0f0;
+      white-space: pre;
+      display: none; /* hidden until clicked */
+    }
+    /* Blinking cursor */
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00ff00;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  </style>
 </head>
-
 <body>
-    <p id="color">#000000</p>
-    <script>
-        function randomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1) + min);
-        }
+  <h1>ASCII Map Atlas</h1>
+  <nav>
+    <a onclick="showMap('castle')">Castle Keep</a>
+    <a onclick="showMap('market')">Market Quarter</a>
+    <a onclick="showMap('harbor')">Harbor</a>
+    <a onclick="showMap('temples')">Temple Row</a>
+    <a onclick="showMap('mage')">Mage Towers</a>
+    <a onclick="showMap('arena')">Arena</a>
+    <a onclick="showMap('residential')">Residential</a>
+    <a onclick="showMap('catacombs')">Catacombs</a>
+    <a onclick="showMap('forge')">Forge</a>
+  </nav>
 
-        function hslToHex(h, s, l) {
-            h /= 360;
-            s /= 100;
-            l /= 100;
-            var r = void 0,
-                g = void 0,
-                b = void 0;
-            if (s === 0) {
-                r = g = b = l; // achromatic
-            } else {
-                var hue2rgb = function hue2rgb(p, q, t) {
-                    if (t < 0) t += 1;
-                    if (t > 1) t -= 1;
-                    if (t < 1 / 6) return p + (q - p) * 6 * t;
-                    if (t < 1 / 2) return q;
-                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-                    return p;
-                };
-                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                var p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1 / 3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1 / 3);
-            }
-            var toHex = function toHex(x) {
-                var hex = Math.round(x * 255).toString(16);
-                return hex.length === 1 ? '0' + hex : hex;
-            };
-            return '#' + toHex(r) + toHex(g) + toHex(b);
-        }
+  <!-- Castle -->
+  <pre id="castle">
+  ##############################
+  #          CASTLE KEEP       #
+  ##############################
+  | Towers | Armory | Barracks |
+  | Great Hall | Library | Lab |
+  ##############################
+  </pre>
 
-        window.onload = function () {
-            let stopProp = function (ev) {
-                ev.stopPropagation();
-            }
+  <!-- Market -->
+  <pre id="market">
+  +----------------+----------------+----------------+
+  | Blacksmith     | Bakery         | Tavern         |
+  +----------------+----------------+----------------+
+  | Clothier       | Jeweler        | Apothecary     |
+  +----------------+----------------+----------------+
+  | Stables        | Market Stalls  | Fishmonger     |
+  +----------------+----------------+----------------+
+  </pre>
 
-            var colorElement = document.getElementById("color");
-            colorElement.addEventListener("click", stopProp, false);
-            colorElement.addEventListener("mousedown", stopProp, false);
+  <!-- Harbor -->
+  <pre id="harbor">
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  | Docks | Warehouses | Fish Mkt|
+  | Shipyard | Lighthouse        |
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  </pre>
 
-            var setFavicon = function (hex) {
-                var canvas = document.createElement('canvas');
-                canvas.width = 16;
-                canvas.height = 16;
-                var ctx = canvas.getContext('2d');
-                ctx.fillStyle = hex;
-                ctx.fillRect(0, 0, 16, 16);
-                document.getElementsByTagName('link')[0].href = canvas.toDataURL("image/x-icon");
-            }
+  <!-- Temples -->
+  <pre id="temples">
+  ################################
+  # Temple of Light | Cathedral  #
+  # Shrine of Mascots | Temple   #
+  # of Shadows                        #
+  ################################
+  </pre>
 
-            var setRandomColor = function setRandomColor() {
-                var h = void 0,
-                    s = void 0,
-                    l = void 0;
+  <!-- Mage Towers -->
+  <pre id="mage">
+  ********************************
+  * Tower of Fire | Tower of Ice *
+  * Tower of Storms | Glyph Acad *
+  ********************************
+  </pre>
 
-                h = randomInt(0, 359);
-                s = randomInt(55, 75);
-                l = randomInt(40, 60);
+  <!-- Arena -->
+  <pre id="arena">
+  ################################
+  # Colosseum | Theater | Circus #
+  # Race Track | Mascot Arena    #
+  ################################
+  </pre>
 
-                document.documentElement.style.setProperty('--color', 'hsl(' + h + ', ' + s + '%, ' + l + '%)');
-                var hex = hslToHex(h, s, l);
-                document.title = hex;
-                colorElement.innerHTML = hex;
-                document.documentElement.style.setProperty('--color-transparent', hex + '22');
+  <!-- Residential -->
+  <pre id="residential">
+  +----------------+----------------+----------------+
+  | Houses         | Apartments     | Gardens        |
+  +----------------+----------------+----------------+
+  | Playgrounds    | Bathhouse      | Courtyards     |
+  +----------------+----------------+----------------+
+  </pre>
 
-                setFavicon(hex);
-            };
-            setRandomColor();
+  <!-- Catacombs -->
+  <pre id="catacombs">
+  ################################
+  # Tombs | Crypts | Hidden Lab  #
+  # Maze Corridors | Lore Vault  #
+  ################################
+  </pre>
 
-            var body = document.getElementsByTagName("body")[0];
-            body.addEventListener("mousedown", function (ev) {
-                ev.preventDefault();
-            });
-            body.addEventListener("click", function () {
-                setRandomColor();
-            }, false);
-        };
-    </script>
+  <!-- Forge -->
+  <pre id="forge">
+  ********************************
+  * Forge Core | Molten Lake     *
+  * Obsidian Mines | Glyph Reactor*
+  ********************************
+  </pre>
+
+  <div class="cursor"></div>
+
+  <script>
+    function showMap(id) {
+      // Hide all maps
+      document.querySelectorAll("pre").forEach(el => el.style.display = "none");
+
+      // Show selected map
+      const map = document.getElementById(id);
+      map.style.display = "block";
+
+      // Typewriter effect
+      const text = map.textContent;
+      map.textContent = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        map.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 10); // speed of typing
+    }
+  </script>
 </body>
-
 </html>
