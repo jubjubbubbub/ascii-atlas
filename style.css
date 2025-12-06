@@ -1,0 +1,55 @@
+/* Base CRT look */
+body {
+  background: #000;
+  color: #0f0;
+  font-family: monospace;
+  margin: 0;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Glow effect */
+#output, pre, .prompt, #commandInput {
+  text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+}
+
+/* Scanline overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(
+    rgba(0,255,0,0.05) 0px,
+    rgba(0,0,0,0.1) 2px
+  );
+  pointer-events: none;
+}
+
+/* Flicker animation */
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.95; }
+  100% { opacity: 1; }
+}
+#output {
+  animation: flicker 0.15s infinite;
+}
+
+/* Input bar styling */
+#commandInput {
+  width: 80%;
+  background: #111;
+  color: #0f0;
+  border: none;
+  outline: none;
+  font-family: monospace;
+  padding: 5px;
+  text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+}
+
+/* Prompt label */
+.prompt {
+  color: #0ff;
+  margin-right: 5px;
+}
