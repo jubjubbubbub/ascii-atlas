@@ -54,6 +54,11 @@ function listOptions(title, options, verb) {
     currentOptions.push({ element: span, command: verb + " " + o, name: o });
   });
 }
+if (cmd === "reset hub") {
+  localStorage.removeItem("atlasLocation");
+  showLocation("middle ground");
+  return;
+}
 
 // Highlight helper
 function highlightOption() {
