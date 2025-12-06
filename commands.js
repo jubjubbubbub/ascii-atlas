@@ -1322,14 +1322,195 @@ Mascots guard the core chamber.
 ====================================================
     `;
   }
-
+  if (loc === "middle ground") {
+    out.innerHTML += "        ________        ________        ________\n";
+    out.innerHTML += "       |        |      |        |      |        |\n";
+    out.innerHTML += "       | LIBRARY|      | MARKET |      | DOCKS  |\n";
+    out.innerHTML += "       |________|      |________|      |________|\n";
+    out.innerHTML += "            \\              |              /\n";
+    out.innerHTML += "             \\             |             /\n";
+    out.innerHTML += "              \\            |            /\n";
+    out.innerHTML += "               \\           |           /\n";
+    out.innerHTML += "                \\          |          /\n";
+    out.innerHTML += "                 \\         |         /\n";
+    out.innerHTML += "                  \\        |        /\n";
+    out.innerHTML += "                   \\       |       /\n";
+    out.innerHTML += "                    \\      |      /\n";
+    out.innerHTML += "                     \\     |     /\n";
+    out.innerHTML += "                      \\    |    /\n";
+    out.innerHTML += "                       \\   |   /\n";
+    out.innerHTML += "                        \\  |  /\n";
+    out.innerHTML += "                         \\ | /\n";
+    out.innerHTML += "                          \\|/\n";
+    out.innerHTML += "                          HUB\n";
+    out.innerHTML += "----------------------------------------------------\n";
+    out.innerHTML += "You stand in the Middle Ground, a central hub.\n";
+    out.innerHTML += "Paths lead to the Library, Market, Docks, Temple, and Arena.\n";
+    out.innerHTML += "====================================================\n";
   // Save location
   localStorage.setItem("atlasLocation", loc);
 
   // Show mini-map overlay
   showMiniMap(loc);
-} // <-- this is the proper end of the function
+}
+function handleCommand(input) {
+  const out = document.getElementById("output");
+  let cmd = input.toLowerCase().trim();
 
+  // strip "explore" if user typed it
+  if (cmd.startsWith("explore")) {
+    cmd = cmd.replace("explore", "").trim();
+  }
+
+  // HUB DIRECTIONS
+  if (cmd === "north") showLocation("library outside");
+  else if (cmd === "south") showLocation("temple of light outside");
+  else if (cmd === "east") showLocation("market stalls outside");
+  else if (cmd === "west") showLocation("docks outside");
+  else if (cmd === "center") showLocation("mascot arena outside");
+
+  // HUB DISTRICTS
+  else if (cmd === "library") showLocation("library outside");
+  else if (cmd === "market") showLocation("market stalls outside");
+  else if (cmd === "docks") showLocation("docks outside");
+  else if (cmd === "temple") showLocation("temple of light outside");
+  else if (cmd === "arena") showLocation("mascot arena outside");
+
+  // CASTLE KEEP
+  else if (cmd === "towers outside") showLocation("towers outside");
+  else if (cmd === "towers inside") showLocation("towers inside");
+  else if (cmd === "armory outside") showLocation("armory outside");
+  else if (cmd === "armory inside") showLocation("armory inside");
+  else if (cmd === "barracks outside") showLocation("barracks outside");
+  else if (cmd === "barracks inside") showLocation("barracks inside");
+  else if (cmd === "great hall outside") showLocation("great hall outside");
+  else if (cmd === "great hall inside") showLocation("great hall inside");
+
+  // LIBRARY
+  else if (cmd === "library inside") showLocation("library inside");
+
+  // LAB
+  else if (cmd === "lab outside") showLocation("lab outside");
+  else if (cmd === "lab inside") showLocation("lab inside");
+
+  // MARKET
+  else if (cmd === "blacksmith outside") showLocation("blacksmith outside");
+  else if (cmd === "blacksmith inside") showLocation("blacksmith inside");
+  else if (cmd === "bakery outside") showLocation("bakery outside");
+  else if (cmd === "bakery inside") showLocation("bakery inside");
+  else if (cmd === "tavern outside") showLocation("tavern outside");
+  else if (cmd === "tavern inside") showLocation("tavern inside");
+  else if (cmd === "clothier outside") showLocation("clothier outside");
+  else if (cmd === "clothier inside") showLocation("clothier inside");
+  else if (cmd === "jeweler outside") showLocation("jeweler outside");
+  else if (cmd === "jeweler inside") showLocation("jeweler inside");
+  else if (cmd === "apothecary outside") showLocation("apothecary outside");
+  else if (cmd === "apothecary inside") showLocation("apothecary inside");
+  else if (cmd === "stables outside") showLocation("stables outside");
+  else if (cmd === "stables inside") showLocation("stables inside");
+  else if (cmd === "market stalls outside") showLocation("market stalls outside");
+  else if (cmd === "market stalls inside") showLocation("market stalls inside");
+
+  // HARBOR
+  else if (cmd === "docks inside") showLocation("docks inside");
+  else if (cmd === "warehouses outside") showLocation("warehouses outside");
+  else if (cmd === "warehouses inside") showLocation("warehouses inside");
+  else if (cmd === "fish market outside") showLocation("fish market outside");
+  else if (cmd === "fish market inside") showLocation("fish market inside");
+  else if (cmd === "shipyard outside") showLocation("shipyard outside");
+  else if (cmd === "shipyard inside") showLocation("shipyard inside");
+  else if (cmd === "lighthouse outside") showLocation("lighthouse outside");
+  else if (cmd === "lighthouse inside") showLocation("lighthouse inside");
+
+  // TEMPLES
+  else if (cmd === "temple of light inside") showLocation("temple of light inside");
+  else if (cmd === "cathedral outside") showLocation("cathedral outside");
+  else if (cmd === "cathedral inside") showLocation("cathedral inside");
+  else if (cmd === "shrine of mascots outside") showLocation("shrine of mascots outside");
+  else if (cmd === "shrine of mascots inside") showLocation("shrine of mascots inside");
+  else if (cmd === "temple of shadows outside") showLocation("temple of shadows outside");
+  else if (cmd === "temple of shadows inside") showLocation("temple of shadows inside");
+
+  // TOWERS
+  else if (cmd === "tower of fire outside") showLocation("tower of fire outside");
+  else if (cmd === "tower of fire inside") showLocation("tower of fire inside");
+  else if (cmd === "tower of ice outside") showLocation("tower of ice outside");
+  else if (cmd === "tower of ice inside") showLocation("tower of ice inside");
+  else if (cmd === "tower of storms outside") showLocation("tower of storms outside");
+  else if (cmd === "tower of storms inside") showLocation("tower of storms inside");
+
+  // ACADEMY
+  else if (cmd === "glyph academy outside") showLocation("glyph academy outside");
+  else if (cmd === "glyph academy inside") showLocation("glyph academy inside");
+
+  // COLOSSEUM
+  else if (cmd === "colosseum outside") showLocation("colosseum outside");
+  else if (cmd === "colosseum inside") showLocation("colosseum inside");
+
+  // THEATER
+  else if (cmd === "theater outside") showLocation("theater outside");
+  else if (cmd === "theater inside") showLocation("theater inside");
+
+  // CIRCUS
+  else if (cmd === "circus outside") showLocation("circus outside");
+  else if (cmd === "circus inside") showLocation("circus inside");
+
+  // RACE TRACK
+  else if (cmd === "race track outside") showLocation("race track outside");
+  else if (cmd === "race track inside") showLocation("race track inside");
+
+  // MASCOT ARENA
+  else if (cmd === "mascot arena inside") showLocation("mascot arena inside");
+
+  // RESIDENTIAL
+  else if (cmd === "houses outside") showLocation("houses outside");
+  else if (cmd === "houses inside") showLocation("houses inside");
+  else if (cmd === "apartments outside") showLocation("apartments outside");
+  else if (cmd === "apartments inside") showLocation("apartments inside");
+  else if (cmd === "gardens outside") showLocation("gardens outside");
+  else if (cmd === "gardens inside") showLocation("gardens inside");
+
+  // PLAYGROUNDS & COURTYARDS
+  else if (cmd === "playgrounds outside") showLocation("playgrounds outside");
+  else if (cmd === "playgrounds inside") showLocation("playgrounds inside");
+  else if (cmd === "bathhouse outside") showLocation("bathhouse outside");
+  else if (cmd === "bathhouse inside") showLocation("bathhouse inside");
+  else if (cmd === "courtyards outside") showLocation("courtyards outside");
+  else if (cmd === "courtyards inside") showLocation("courtyards inside");
+
+  // CATACOMBS
+  else if (cmd === "tombs outside") showLocation("tombs outside");
+  else if (cmd === "tombs inside") showLocation("tombs inside");
+  else if (cmd === "crypts outside") showLocation("crypts outside");
+  else if (cmd === "crypts inside") showLocation("crypts inside");
+  else if (cmd === "hidden lab outside") showLocation("hidden lab outside");
+  else if (cmd === "hidden lab inside") showLocation("hidden lab inside");
+  else if (cmd === "maze corridors outside") showLocation("maze corridors outside");
+  else if (cmd === "maze corridors inside") showLocation("maze corridors inside");
+  else if (cmd === "lore vault outside") showLocation("lore vault outside");
+  else if (cmd === "lore vault inside") showLocation("lore vault inside");
+
+  // FORGE DISTRICT
+  else if (cmd === "forge core outside") showLocation("forge core outside");
+  else if (cmd === "forge core inside") showLocation("forge core inside");
+  else if (cmd === "molten lake outside") showLocation("molten lake outside");
+  else if (cmd === "molten lake inside") showLocation("molten lake inside");
+  else if (cmd === "obsidian mines outside") showLocation("obsidian mines outside");
+  else if (cmd === "obsidian mines inside") showLocation("obsidian mines inside");
+  else if (cmd === "glyph reactor outside") showLocation("glyph reactor outside");
+  else if (cmd === "glyph reactor inside") showLocation("glyph reactor inside");
+
+  // FALLBACK
+  else {
+    out.innerHTML += "\nUnknown command: " + input + "\n";
+  }
+}
+document.getElementById("command").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    handleCommand(this.value);
+    this.value = ""; // clear after submit
+  }
+});
   // =========================
   // COMMANDS + EVENTS
   // =========================
@@ -1525,32 +1706,6 @@ Mascots guard the core chamber.
       if (route("glyph reactor", "glyph_reactor_inside", "glyph_reactor_outside",
         "Core pulses—gauges redline briefly!",
         "The tower hum deepens—glyphs glow outside.")) return;
-
-  if (loc === "middle ground") {
-    out.innerHTML += "        ________        ________        ________\n";
-    out.innerHTML += "       |        |      |        |      |        |\n";
-    out.innerHTML += "       | LIBRARY|      | MARKET |      | DOCKS  |\n";
-    out.innerHTML += "       |________|      |________|      |________|\n";
-    out.innerHTML += "            \\              |              /\n";
-    out.innerHTML += "             \\             |             /\n";
-    out.innerHTML += "              \\            |            /\n";
-    out.innerHTML += "               \\           |           /\n";
-    out.innerHTML += "                \\          |          /\n";
-    out.innerHTML += "                 \\         |         /\n";
-    out.innerHTML += "                  \\        |        /\n";
-    out.innerHTML += "                   \\       |       /\n";
-    out.innerHTML += "                    \\      |      /\n";
-    out.innerHTML += "                     \\     |     /\n";
-    out.innerHTML += "                      \\    |    /\n";
-    out.innerHTML += "                       \\   |   /\n";
-    out.innerHTML += "                        \\  |  /\n";
-    out.innerHTML += "                         \\ | /\n";
-    out.innerHTML += "                          \\|/\n";
-    out.innerHTML += "                          HUB\n";
-    out.innerHTML += "----------------------------------------------------\n";
-    out.innerHTML += "You stand in the Middle Ground, a central hub.\n";
-    out.innerHTML += "Paths lead to the Library, Market, Docks, Temple, and Arena.\n";
-    out.innerHTML += "====================================================\n";
   }
 
       log("Unknown command. Try: explore <location> / gift / sell");
