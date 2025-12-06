@@ -167,6 +167,7 @@ function showLocation(loc) {
   out.innerHTML += "                 " + loc.toUpperCase() + "\n";
   out.innerHTML += "====================================================\n";
 
+  // Middle Ground hub
   if (loc === "middle ground") {
     out.innerHTML += "         [NORTH: Library]\n";
     out.innerHTML += " [WEST: Docks]   [CENTER: Arena]   [EAST: Market]\n";
@@ -177,6 +178,7 @@ function showLocation(loc) {
     out.innerHTML += "====================================================\n";
   }
 
+  // Library scene
   if (loc === "library inside") {
     out.innerHTML += " _______________________\n";
     out.innerHTML += "| || || || || || || || |\n";
@@ -193,6 +195,40 @@ function showLocation(loc) {
     out.innerHTML += "====================================================\n";
   }
 
+  // Market scene (example placeholder)
+  if (loc === "market stalls") {
+    out.innerHTML += "Rows of stalls bustle with traders.\n";
+    out.innerHTML += "Goods from every district are displayed.\n";
+    out.innerHTML += "====================================================\n";
+  }
+
+  // Docks scene (example placeholder)
+  if (loc === "docks") {
+    out.innerHTML += "Wooden piers stretch into the water.\n";
+    out.innerHTML += "Ships creak as waves lap against them.\n";
+    out.innerHTML += "====================================================\n";
+  }
+
+  // Temple scene (example placeholder)
+  if (loc === "temple of light") {
+    out.innerHTML += "Tall pillars rise into the sky.\n";
+    out.innerHTML += "Candles flicker, casting shadows on ancient glyphs.\n";
+    out.innerHTML += "====================================================\n";
+  }
+
+  // Arena scene (example placeholder)
+  if (loc === "mascot arena") {
+    out.innerHTML += "Crowds cheer as mascots clash in contests.\n";
+    out.innerHTML += "The ground shakes with energy.\n";
+    out.innerHTML += "====================================================\n";
+  }
+
+  // Save location
+  localStorage.setItem("atlasLocation", loc);
+
+  // Show mini-map overlay
+  showMiniMap(loc);
+}
   // Save location
   localStorage.setItem("atlasLocation", loc);
 
